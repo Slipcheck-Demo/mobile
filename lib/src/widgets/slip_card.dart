@@ -39,25 +39,16 @@ class SlipCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('BOOKING CODE', style: AppTextStyles.fieldLabel),
-                      const SizedBox(height: 4),
-                      Text(bookingCode, style: AppTextStyles.bookingCode),
-                    ],
+                  child: _LabeledValue(
+                    label: 'BOOKING CODE',
+                    child: Text(bookingCode, style: AppTextStyles.bookingCode),
                   ),
                 ),
                 if (totalOdds != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('TOTAL ODDS', style: AppTextStyles.fieldLabel),
-                      const SizedBox(height: 4),
-                      OddsBadge(value: totalOdds!),
-                    ],
+                  _LabeledValue(
+                    alignEnd: true,
+                    label: 'TOTAL ODDS',
+                    child: OddsBadge(value: totalOdds!),
                   ),
               ],
             ),
@@ -66,6 +57,29 @@ class SlipCard extends StatelessWidget {
             SelectionTile(key: ValueKey(selection.outcomeId), selection: selection),
         ],
       ),
+    );
+  }
+}
+
+// The "uppercase label above a value" block is used for both the booking code and the
+// total-odds figure — kept private to this file since it's only needed here.
+class _LabeledValue extends StatelessWidget {
+  const _LabeledValue({required this.label, required this.child, this.alignEnd = false});
+
+  final String label;
+  final Widget child;
+  final bool alignEnd;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label, style: AppTextStyles.fieldLabel),
+        const SizedBox(height: 4),
+        child,
+      ],
     );
   }
 }
