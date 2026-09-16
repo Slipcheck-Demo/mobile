@@ -34,7 +34,7 @@ class _SlipScreenState extends ConsumerState<SlipScreen> {
 
   // Mirrors the web client's copy (docs/design-tokens.md "States" — Error), which already
   // covers both an invalid/expired code and a decoded-but-empty slip: the backend can't
-  // tell those apart either (docs/betway-api.md §2 Discrepancy #2), so neither can we.
+  // tell those apart either (docs/betway-api.md §2 Nuance #2), so neither can we.
   String _errorMessage(Object error) {
     if (error is BackendException && error.code == 'invalid_code') {
       return "We couldn't find a usable slip for that code. It may be wrong, expired, "
