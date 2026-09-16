@@ -75,6 +75,7 @@ class _SlipScreenState extends ConsumerState<SlipScreen> {
                   controller: _controller,
                   onSubmit: _handleSubmit,
                   submitLabel: 'Go',
+                  placeholder: 'e.g. BW72B51F99',
                   hasError: slipState.hasError,
                   enabled: !slipState.isLoading,
                 ),

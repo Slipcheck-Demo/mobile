@@ -8,6 +8,7 @@ class CodeInputForm extends StatelessWidget {
     required this.controller,
     required this.onSubmit,
     required this.submitLabel,
+    this.placeholder,
     this.hasError = false,
     this.enabled = true,
   });
@@ -15,6 +16,7 @@ class CodeInputForm extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onSubmit;
   final String submitLabel;
+  final String? placeholder;
   final bool hasError;
   final bool enabled;
 
@@ -30,6 +32,11 @@ class CodeInputForm extends StatelessWidget {
             textInputAction: TextInputAction.done,
             style: AppTextStyles.bookingCode.copyWith(fontSize: 15),
             decoration: InputDecoration(
+              hintText: placeholder,
+              hintStyle: AppTextStyles.bookingCode.copyWith(
+                fontSize: 15,
+                color: AppColors.textTertiary,
+              ),
               filled: true,
               fillColor: AppColors.surface,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
