@@ -4,7 +4,7 @@
          build could never reach the network). -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="mobile"
+        android:label="Slipcheck"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
