@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'src/slip/slip_screen.dart';
 import 'src/theme/app_theme.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class SlipcheckApp extends StatelessWidget {
       title: 'Slipcheck',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
-      home: const Scaffold(body: SizedBox.shrink()),
+      home: const SlipScreen(),
     );
   }
 }
