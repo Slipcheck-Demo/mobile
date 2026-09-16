@@ -31,8 +31,8 @@ Generated code (`*.g.dart` from `build_runner`) is committed, not gitignored.
 
 ## Dev setup
 
-Requires [`../backend`](../backend) running locally first (`docker compose up -d && npx
-prisma migrate dev && npm run dev`).
+Requires [`../backend`](../backend) running locally first (`npm run dev` — no database or
+setup step needed, see that repo's README).
 
 ```
 cp .env.example .env          # API_BASE_URL, defaults to http://localhost:3000
@@ -50,3 +50,38 @@ flutter analyze
 No automated widget tests (deferred per the skill's own scope — see its "What was dropped"
 section); verified instead by running in a real iOS simulator against the live backend +
 live Betway data.
+
+## Android release build
+
+```
+cp .env.example .env          # point API_BASE_URL at the live backend before building
+flutter build apk --release
+```
+
+Produces `build/app/outputs/flutter-apk/app-release.apk`, signed with the Flutter default
+debug keystore (no dedicated release keystore was set up — acceptable for this take-home;
+a real release would need its own signing key). Distributed via Firebase App Distribution.
+
+## iOS distribution path
+
+This repo was only built and verified for Android (Flutter's iOS toolchain needs a macOS
+host with Xcode, which this delivery didn't run against a physical/TestFlight pipeline). To
+ship an IPA instead, the *app code itself needs no changes* — it's the same Flutter/Dart
+source, `dio`/`retrofit`/Riverpod work identically on both platforms. What changes is purely
+platform tooling:
+
+1. **Signing** — an Apple Developer Program account, a Distribution certificate, and a
+   provisioning profile (App Store or Ad Hoc) in place of Android's debug keystore.
+2. **Build** — `flutter build ipa` instead of `flutter build apk`, run from Xcode/macOS
+   (there's no cross-compiling an IPA from Linux/Windows).
+3. **Distribution** — either Firebase App Distribution's iOS track (same `firebase
+   appdistribution:distribute`, pointed at the `.ipa`) or TestFlight; both need the app
+   registered in App Store Connect first.
+4. **Permissions** — `Info.plist` needs an `NSAppTransportSecurity` exception (or a real
+   TLS cert on the backend's domain, which it already has via `docs/architecture.md`'s
+   `sslip.io` cert) since Betway's/our own HTTPS setup should already satisfy ATS with no
+   extra entries.
+
+No Dart/Flutter code changes — this is entirely a packaging/signing/distribution-pipeline
+difference, which is why it wasn't worth doing without a real Apple Developer account for a
+take-home.
