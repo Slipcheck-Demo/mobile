@@ -7,7 +7,8 @@ subject to it).
 
 Design: [Claude Design canvas](https://claude.ai/artifact/X28GaTC2QPLeU9hVkUTuKD)
 (`Mobile.dc.html` artboard), tokens in `../docs/design-tokens.md` — read that file before
-changing any color/spacing/typography value here.
+changing any color/spacing/typography value here. System architecture and sequence
+diagrams live in the `betway-booking-backend` repo's `docs/architecture.md`.
 
 ## Architecture
 
