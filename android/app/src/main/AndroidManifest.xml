@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The app's only job is talking to our backend — required for every build variant, not
+         just debug (the debug/profile manifests already had it, main did not, so a release
+         build could never reach the network). -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="mobile"
         android:name="${applicationName}"

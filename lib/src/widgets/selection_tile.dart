@@ -58,11 +58,13 @@ class SelectionTile extends StatelessWidget {
             const SizedBox(width: 14),
             StatusPill(isDeadLeg: isDeadLeg),
             const SizedBox(width: 14),
-            SizedBox(
-              width: 44,
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 44),
               child: Text(
                 formatOdds(selection.priceDecimal),
                 textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.oddsFigure,
               ),
             ),

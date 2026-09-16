@@ -21,7 +21,7 @@ final class BackendClientProvider
         argument: null,
         retry: null,
         name: r'backendClientProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,4 +48,4 @@ final class BackendClientProvider
   }
 }
 
-String _$backendClientHash() => r'bcb9928dd8eff9449fd320290e1d306f766ae6e6';
+String _$backendClientHash() => r'c4ea0d8ff7a7a4a74f2ee12677aec7e9943f2bff';

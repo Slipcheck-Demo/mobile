@@ -13,6 +13,8 @@ part 'backend_client.g.dart';
 const _defaultBaseUrl = 'http://localhost:3000';
 const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: _defaultBaseUrl);
 
+const _requestTimeout = Duration(seconds: 12);
+
 /// The backend's own error taxonomy (`{ "error": <code> }`) — see
 /// stellar-test-task/backend/src/httpErrors.ts. Never a raw Betway error code/message.
 class BackendException implements Exception {
@@ -33,24 +35,43 @@ class BackendClient {
   final http.Client _http;
 
   Future<SlipResult> resolveCode(String bookingCode) async {
-    final response = await _http.post(
-      Uri.parse('$baseUrl/api/booking-codes/resolve'),
-      headers: const {'Content-Type': 'application/json'},
-      body: jsonEncode({'bookingCode': bookingCode}),
-    );
+    final response = await _http
+        .post(
+          Uri.parse('$baseUrl/api/booking-codes/resolve'),
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode({'bookingCode': bookingCode}),
+        )
+        .timeout(_requestTimeout);
 
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    Map<String, dynamic>? body;
+    try {
+      body = jsonDecode(response.body) as Map<String, dynamic>;
+    } on FormatException {
+      // A proxy/load balancer in front of the backend can return a non-JSON error body
+      // (e.g. a bare 502/504) — fall back to a status-derived code instead of crashing.
+      body = null;
+    }
 
     if (response.statusCode != 200) {
       throw BackendException(
-        body['error'] as String? ?? 'upstream_error',
+        body?['error'] as String? ?? 'upstream_error',
         response.statusCode,
       );
     }
 
+    if (body == null) {
+      throw BackendException('upstream_error', response.statusCode);
+    }
+
     return SlipResult.fromJson(body);
   }
+
+  void close() => _http.close();
 }
 
-@riverpod
-BackendClient backendClient(Ref ref) => BackendClient(baseUrl: apiBaseUrl);
+@Riverpod(keepAlive: true)
+BackendClient backendClient(Ref ref) {
+  final client = BackendClient(baseUrl: apiBaseUrl);
+  ref.onDispose(client.close);
+  return client;
+}
