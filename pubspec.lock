@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.10"
+  ansicolor:
+    dependency: transitive
+    description:
+      name: ansicolor
+      sha256: "50e982d500bc863e1d703448afdbf9e5a72eb48840a4f766fa361ffd6877055f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   args:
     dependency: transitive
     description:
@@ -201,6 +209,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      sha256: "852ec3b48cc431ac04fff978413c541502b67ffc3e26921e74e3d994694192c1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.11.1"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "3a1b2cd7be71086f38504956e3ebcd2837288d231ff454bafa78021244102bfc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
   fake_async:
     dependency: transitive
     description:
@@ -238,6 +262,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: d41da11fb497314fbf89811ec30af02d1d898b47980a129f0a8c0a1720460ba2
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -299,8 +331,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  hotreloader:
+    dependency: transitive
+    description:
+      name: hotreloader
+      sha256: "66871df468fc24eee81f1a0a7cb98acc104716f9b7376d355437b48d633c4ebf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.0"
   http:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http
       sha256: "87721a4a50b19c7f1d49001e51409bddc46303966ce89a65af4f4e6004896412"
@@ -411,6 +451,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  lean_builder:
+    dependency: transitive
+    description:
+      name: lean_builder
+      sha256: ef5cd5f907157eb7aa87d1704504b5a6386d2cbff88a3c2b3344477bab323ee9
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   lints:
     dependency: transitive
     description:
@@ -563,6 +611,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.3"
+  protobuf:
+    dependency: transitive
+    description:
+      name: protobuf
+      sha256: "2fcc8a202ca7ec17dab7c97d6b6d91cf03aa07fe6f65f8afbb6dfa52cc5bd902"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0"
   pub_semver:
     dependency: transitive
     description:
@@ -579,6 +635,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
+  retrofit:
+    dependency: "direct main"
+    description:
+      name: retrofit
+      sha256: "84063c18a00d55af41d6b8401edf8473e8c215bd7068ef7ec5e34c60657ffdbe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.1"
+  retrofit_generator:
+    dependency: "direct dev"
+    description:
+      name: retrofit_generator
+      sha256: "7ec323f3329ad2ca0bcdc96fe02ec7f2486ecfac6cd2d035b03c398ef6f42308"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.2.0"
   riverpod:
     dependency: transitive
     description:
@@ -840,6 +912,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  xxh3:
+    dependency: transitive
+    description:
+      name: xxh3
+      sha256: "399a0438f5d426785723c99da6b16e136f4953fb1e9db0bf270bd41dd4619916"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   yaml:
     dependency: transitive
     description:

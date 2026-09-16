@@ -1,19 +1,11 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../config/env.dart';
 import 'models/slip_result.dart';
 
 part 'backend_client.g.dart';
-
-/// Thin client to our own backend — never calls Betway directly (see
-/// stellar-test-task/docs/betway-api.md §10 and the backend's own README for why).
-/// Override at build/run time: --dart-define=API_BASE_URL=https://your-backend.example.com
-const _defaultBaseUrl = 'http://localhost:3000';
-const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: _defaultBaseUrl);
-
-const _requestTimeout = Duration(seconds: 12);
 
 /// The backend's own error taxonomy (`{ "error": <code> }`) — see
 /// stellar-test-task/backend/src/httpErrors.ts. Never a raw Betway error code/message.
@@ -27,51 +19,49 @@ class BackendException implements Exception {
   String toString() => 'BackendException($code, status: $statusCode)';
 }
 
-class BackendClient {
-  BackendClient({required this.baseUrl, http.Client? httpClient})
-      : _http = httpClient ?? http.Client();
+/// Thin, generated REST interface to our own backend — never calls Betway directly (see
+/// stellar-test-task/docs/betway-api.md §10 and the backend's own README for why). Wrapped
+/// by [BackendClient] below, which is what the rest of the app actually calls: retrofit
+/// lets a non-2xx response's `{ "error": <code> }` body escape as a raw DioException, so a
+/// wrapper is still needed to map that into our own [BackendException].
+@RestApi()
+abstract class BookingCodesApi {
+  factory BookingCodesApi(Dio dio, {String baseUrl}) = _BookingCodesApi;
 
-  final String baseUrl;
-  final http.Client _http;
+  @POST('/api/booking-codes/resolve')
+  Future<SlipResult> resolveCode(@Body() Map<String, dynamic> body);
+}
+
+class BackendClient {
+  BackendClient(Dio dio) : _api = BookingCodesApi(dio);
+
+  final BookingCodesApi _api;
 
   Future<SlipResult> resolveCode(String bookingCode) async {
-    final response = await _http
-        .post(
-          Uri.parse('$baseUrl/api/booking-codes/resolve'),
-          headers: const {'Content-Type': 'application/json'},
-          body: jsonEncode({'bookingCode': bookingCode}),
-        )
-        .timeout(_requestTimeout);
-
-    Map<String, dynamic>? body;
     try {
-      body = jsonDecode(response.body) as Map<String, dynamic>;
-    } on FormatException {
-      // A proxy/load balancer in front of the backend can return a non-JSON error body
-      // (e.g. a bare 502/504) — fall back to a status-derived code instead of crashing.
-      body = null;
+      return await _api.resolveCode({'bookingCode': bookingCode});
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final code = data is Map ? data['error'] as String? : null;
+      throw BackendException(code ?? 'upstream_error', e.response?.statusCode ?? 502);
     }
-
-    if (response.statusCode != 200) {
-      throw BackendException(
-        body?['error'] as String? ?? 'upstream_error',
-        response.statusCode,
-      );
-    }
-
-    if (body == null) {
-      throw BackendException('upstream_error', response.statusCode);
-    }
-
-    return SlipResult.fromJson(body);
   }
-
-  void close() => _http.close();
 }
 
 @Riverpod(keepAlive: true)
-BackendClient backendClient(Ref ref) {
-  final client = BackendClient(baseUrl: apiBaseUrl);
-  ref.onDispose(client.close);
-  return client;
+Dio dio(Ref ref) {
+  // dotenv.load() must have already run in main() before this provider is first read.
+  final baseUrl = dotenvBaseUrl();
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 12),
+      receiveTimeout: const Duration(seconds: 12),
+    ),
+  );
+  ref.onDispose(dio.close);
+  return dio;
 }
+
+@Riverpod(keepAlive: true)
+BackendClient backendClient(Ref ref) => BackendClient(ref.watch(dioProvider));

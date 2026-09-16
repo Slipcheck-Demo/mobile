@@ -1,9 +1,9 @@
 # betway-booking-mobile
 
 Flutter app for the Betway Nigeria booking-code product — one screen: Decode. Talks to
-[`../backend`](../backend) — never calls Betway directly. No CORS setup needed for this
-client (CORS is a browser-only concern; Dart's `http` client on iOS/Android isn't subject
-to it).
+[`../backend`](../backend) via `dio`/`retrofit` — never calls Betway directly. No CORS
+setup needed for this client (CORS is a browser-only concern; Dio on iOS/Android isn't
+subject to it).
 
 Design: [Claude Design canvas](https://claude.ai/artifact/X28GaTC2QPLeU9hVkUTuKD)
 (`Mobile.dc.html` artboard), tokens in `../docs/design-tokens.md` — read that file before
@@ -20,7 +20,8 @@ lib/
 ├── main.dart
 └── src/
     ├── theme/         design tokens (colors, typography)
-    ├── api/           backend HTTP client + json_serializable DTOs
+    ├── config/        env config (API_BASE_URL, read from .env)
+    ├── api/           retrofit REST interface + dio client + json_serializable DTOs
     ├── slip/           Riverpod state (slipProvider) + the screen
     └── widgets/        SlipCard, SelectionTile, StatusPill, OddsBadge, ErrorBanner, ...
 ```
@@ -33,9 +34,10 @@ Requires [`../backend`](../backend) running locally first (`docker compose up -d
 prisma migrate dev && npm run dev`).
 
 ```
+cp .env.example .env          # API_BASE_URL, defaults to http://localhost:3000
 flutter pub get
-dart run build_runner build   # regenerate *.g.dart after changing an @riverpod/@JsonSerializable class
-flutter run --dart-define=API_BASE_URL=http://localhost:3000   # defaults to this URL if omitted
+dart run build_runner build   # regenerate *.g.dart after changing an @riverpod/@RestApi/@JsonSerializable class
+flutter run
 ```
 
 ## Checks
